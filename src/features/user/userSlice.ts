@@ -7,7 +7,7 @@ type UserT = { name: string; email: string };
 
 type InitialAuthStateT = {
   isAuth: boolean;
-  userInfo: UserT;
+  userData: UserT | null;
   isLoading: boolean;
   error: null | Error | string;
 };
@@ -16,11 +16,14 @@ type InitialAuthStateT = {
 //Res Types:
 type RegisterResT = { user: UserT; message: string };
 type LoginResT = { user: UserT; message: string };
+type LogoutResT = { message: string };
+type CheckIsLoggedInT = { isLoggedIn: boolean };
+type GetUserDataT = { user: UserT };
 
 //Thunk Creators:
 
 export const register = createAsyncThunk(
-  'auth/Register',
+  'user/Register',
   async (userData: { name: string; email: string; password: string }, thunkApi) => {
     try {
       const { data } = await axiosInstance.post<RegisterResT>(`/auth/register`, userData);
@@ -35,7 +38,7 @@ export const register = createAsyncThunk(
   }
 );
 export const login = createAsyncThunk(
-  'auth/Login',
+  'user/Login',
   async (userData: { email: string; password: string }, thunkApi) => {
     try {
       const { data } = await axiosInstance.post<LoginResT>(`/auth/login`, userData);
@@ -49,9 +52,49 @@ export const login = createAsyncThunk(
     }
   }
 );
+export const logout = createAsyncThunk('user/Logout', async (_, thunkApi) => {
+  try {
+    const { data } = await axiosInstance.post<LogoutResT>(`/auth/logout`);
+    return data;
+  } catch (err) {
+    const error: AxiosError<any> = err as any;
+    if (error.response) {
+      return thunkApi.rejectWithValue(error.response.data);
+    }
+    throw err;
+  }
+});
+export const getUserData = createAsyncThunk('user/GetData', async (_, thunkAPI) => {
+  try {
+    const { data } = await axiosInstance.get<GetUserDataT>('/user');
+    return data;
+  } catch (err) {
+    const error: AxiosError<any> = err as any;
+    if (error.response) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+    throw err;
+  }
+});
+export const checkIsLoggedIn = createAsyncThunk('user/checkIsLoggedIn', async (_, thunkAPI) => {
+  try {
+    const { data } = await axiosInstance.get<CheckIsLoggedInT>('/auth/is-logged-in');
+
+    if (data.isLoggedIn === true) {
+      thunkAPI.dispatch(getUserData());
+    }
+    return data;
+  } catch (err) {
+    const error: AxiosError<any> = err as any;
+    if (error.response) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+});
 
 const initialState = {
   isAuth: false,
+  userData: null,
   isLoading: false,
   error: null,
 } as InitialAuthStateT;
@@ -67,7 +110,7 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(register.fulfilled, (state, { payload }) => {
-        state.userInfo = payload.user;
+        state.userData = payload.user;
         state.isAuth = true;
         state.isLoading = false;
         toast.success(`Hello There ${payload.user.name}!`);
@@ -84,7 +127,7 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(login.fulfilled, (state, { payload }) => {
-        state.userInfo = payload.user;
+        state.userData = payload.user;
         state.isAuth = true;
         state.isLoading = false;
         toast.success(`Hello There ${payload.user.name}!`);
@@ -92,6 +135,28 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, { payload }: PayloadAction<{ message: string } | any>) => {
         state.isLoading = false;
         toast.error(payload.message);
+      })
+      //checkIsLoggedIn
+      .addCase(checkIsLoggedIn.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(
+        checkIsLoggedIn.fulfilled,
+        (state, action: PayloadAction<{ isLoggedIn: boolean } | any>) => {
+          state.isAuth = action.payload.isLoggedIn;
+          state.isLoading = false;
+        }
+      )
+      .addCase(checkIsLoggedIn.rejected, (state) => {
+        state.isLoading = false;
+      })
+      //GetUserData
+      .addCase(getUserData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserData.fulfilled, (state, action) => {
+        state.userData = action.payload.user;
+        state.isLoading = false;
       });
   },
 });

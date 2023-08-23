@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../store/store';
 
 export const Header = () => {
+  const user = useAppSelector((state) => state.user.userData);
+
   return (
     <header className="flex justify-between">
-      <a href="" className="logo flex items-center gap-1">
+      <Link to={'/'} className="logo flex items-center gap-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -19,7 +22,7 @@ export const Header = () => {
           />
         </svg>
         <span className="font-bold text-xl">book</span>
-      </a>
+      </Link>
 
       <div className="search-widget flex gap-2 border border-gray-300 rounded-full px-4 py-2 shadow-md shadow-gray-300">
         <div>Anywhere</div>
@@ -46,7 +49,7 @@ export const Header = () => {
       </div>
 
       <Link
-        to={'/login'}
+        to={user ? '/user/account' : '/login'}
         className="user-widget flex gap-2 border border-gray-300 rounded-full px-4 py-2"
       >
         <svg
@@ -78,6 +81,7 @@ export const Header = () => {
             />
           </svg>
         </div>
+        {!!user && <div>{user.name}</div>}
       </Link>
     </header>
   );

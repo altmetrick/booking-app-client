@@ -49,7 +49,7 @@ export const Header = () => {
       </div>
 
       <Link
-        to={user ? '/user/account' : '/login'}
+        to={user ? '/account/profile' : '/login'}
         className="user-widget flex gap-2 border border-gray-300 rounded-full px-4 py-2"
       >
         <svg

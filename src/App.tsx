@@ -6,9 +6,14 @@ import { LoginPage } from './pages/LoginPage';
 import { Layout } from './components/Layout';
 import { RegisterPage } from './pages/RegisterPage';
 import { PrivateRoutes } from './components/PrivateRoutes';
-import { UserPage } from './pages/UserPage';
+import { AccountPage } from './pages/account/AccountPage';
 import { useAppDispatch } from './store/store';
 import { checkIsLoggedIn } from './features/user/userSlice';
+import { ProfilePage } from './pages/account/ProfilePage';
+import { BookingsPage } from './pages/account/BookingsPage';
+import { PlacesPage } from './pages/account/PlacesPage';
+import { AddNewPlace } from './components/AddNewPlace';
+import { MyPlacesList } from './components/MyPlacesList';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -19,16 +24,22 @@ function App() {
       <Toaster position="top-right" toastOptions={{ style: { fontSize: '1.5rem' } }} />
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route index element={<IndexPage />} />
           <Route element={<PrivateRoutes />}>
-            <Route path="/user" element={<UserPage />}>
-              <Route index element={<div>Account</div>} />
-              <Route path="account" element={<div>Account</div>} />
-              <Route path="bookings" element={<div>Bookings</div>} />
-              <Route path="accommodations" element={<div>Accommodations</div>} />
+            <Route path="/account" element={<AccountPage />}>
+              <Route index element={<ProfilePage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="bookings" element={<BookingsPage />} />
+
+              <Route path="places" element={<PlacesPage />}>
+                <Route index element={<MyPlacesList />} />
+                <Route path="new" element={<AddNewPlace />} />
+                <Route path=":placeId" element={<div>Single Place</div>} />
+                <Route path="edit/:placeId" element={<div>Edit Place</div>} />
+              </Route>
             </Route>
           </Route>
 
-          <Route index element={<IndexPage />} />
           <Route path={'/login'} element={<LoginPage />} />
           <Route path={'/register'} element={<RegisterPage />} />
         </Route>

@@ -54,7 +54,7 @@ export const login = createAsyncThunk(
 );
 export const logout = createAsyncThunk('user/Logout', async (_, thunkApi) => {
   try {
-    const { data } = await axiosInstance.post<LogoutResT>(`/auth/logout`);
+    const { data } = await axiosInstance.get<LogoutResT>(`/auth/logout`);
     return data;
   } catch (err) {
     const error: AxiosError<any> = err as any;
@@ -135,6 +135,12 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, { payload }: PayloadAction<{ message: string } | any>) => {
         state.isLoading = false;
         toast.error(payload.message);
+      })
+      //Logout
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuth = false;
+        state.userData = null;
+        //toast.success(payload.message);
       })
       //checkIsLoggedIn
       .addCase(checkIsLoggedIn.pending, (state) => {

@@ -39,6 +39,7 @@ export const MyPlacesList = () => {
           Add new place
         </Link>
       </div>
+      <div></div>
     </div>
   );
 };

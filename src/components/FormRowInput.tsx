@@ -1,13 +1,14 @@
 import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import { PlacePropNameT } from '../types';
 
 type FormRowPropsT = {
   textarea?: boolean;
   labelText: string;
   pText?: string;
   type: HTMLInputTypeAttribute;
-  name: string;
+  name: PlacePropNameT;
   placeholder?: string;
-  value: '' | string;
+  value: '' | string | number;
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 export const FormRowInput: React.FC<FormRowPropsT> = ({ textarea, labelText, pText, ...rest }) => {

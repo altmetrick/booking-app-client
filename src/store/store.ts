@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { userReducer } from '../features/user/userSlice';
+import { singlePlaceReducer } from '../features/place/singlePlaceSlice';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    singlePlace: singlePlaceReducer,
   },
 });
 

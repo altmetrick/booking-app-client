@@ -3,7 +3,7 @@ import { PerkT } from '../types';
 
 type PerksPropsT = {
   selectedPerks: PerkT[];
-  selectPerk: React.Dispatch<React.SetStateAction<PerkT[]>>;
+  selectPerk: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 interface PerkOptionT {
   label: string;
@@ -139,17 +139,6 @@ export const Perks: React.FC<PerksPropsT> = ({ selectedPerks, selectPerk }) => {
     },
   ];
 
-  const handleCheckBoxClick = (e: ChangeEvent<HTMLInputElement>) => {
-    // alert(`${e.target.name}  ${e.target.value} ${e.target.checked}`);
-    const { name, checked } = e.target as { name: PerkT; checked: boolean };
-
-    if (checked) {
-      selectPerk((prev) => [...prev, name]);
-    } else {
-      selectPerk([...selectedPerks.filter((perk) => perk !== name)]);
-    }
-  };
-
   const renderedPerks = perksOptions.map((perk) => (
     <label
       key={perk.name}
@@ -161,7 +150,7 @@ export const Perks: React.FC<PerksPropsT> = ({ selectedPerks, selectPerk }) => {
         name={perk.name}
         type="checkbox"
         checked={selectedPerks.includes(perk.name)}
-        onChange={handleCheckBoxClick}
+        onChange={selectPerk}
       />
       {perk.icon()}
       <span>{perk.label}</span>

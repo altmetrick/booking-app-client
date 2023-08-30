@@ -1,87 +1,51 @@
 import { ChangeEvent, useState } from 'react';
 import { PhotoT } from '../types';
-import { axiosInstance } from '../features/api/axios-instance';
+
 import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '../store/store';
+import {
+  deletePhoto,
+  uploadMultiplePhotos,
+  uploadPhotoByLink,
+} from '../features/place/singlePlaceSlice';
 
 type PhotosUploaderPropsT = {
-  addedPhotos: PhotoT[];
-  setAddedPhotos: React.Dispatch<React.SetStateAction<PhotoT[]>>;
+  photos: PhotoT[];
 };
 
-export const PhotosUploader: React.FunctionComponent<PhotosUploaderPropsT> = (props) => {
-  const { addedPhotos, setAddedPhotos } = props;
+export const PhotosUploader: React.FunctionComponent<PhotosUploaderPropsT> = ({ photos }) => {
+  const dispatch = useAppDispatch();
 
   const [photoLink, setPhotoLink] = useState('');
 
   const handleAddPhotoByLink = async () => {
-    try {
-      const { data } = await axiosInstance.post<{ photo: { name: string; url: string } }>(
-        '/places/photo-by-link',
-        {
-          photoUrl: photoLink.trim(),
-        }
-      );
-      setAddedPhotos((prev) => [...prev, data.photo]);
-      setPhotoLink('');
-    } catch (err) {
-      console.log(err);
-    }
+    dispatch(uploadPhotoByLink(photoLink));
+    setPhotoLink('');
   };
-  const handleDeletePhoto = async (photoName: string) => {
-    try {
-      const { data } = await axiosInstance.delete<{ message: string }>(
-        `/places/photos/${photoName}`
-      );
-      console.log(data);
+  const handleDeletePhoto = (photoName: string) => {
+    dispatch(deletePhoto(photoName));
+  };
 
-      setAddedPhotos((prev) => [...prev.filter((photo) => photo.name !== photoName)]);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const handleAddMultiplePhotos = async (e: ChangeEvent<HTMLInputElement>) => {
     //grab chosen files and make an array
     const newImgFiles = Array.from(e.target.files || []);
 
-    if (newImgFiles.length + addedPhotos.length > 5) {
+    if (newImgFiles.length + photos.length > 5) {
       toast.error('Max - 5 photos!!!');
       return;
     }
-
-    const filesData = new FormData();
+    //check size of each file
     for (let i = 0; i < newImgFiles.length; i++) {
-      //check size of each file
       if (newImgFiles[i].size > 1.5 * 1024 * 1024) {
-        console.log(newImgFiles[i].size);
-        toast.error(`Provide files less than 1.5MB, file ${newImgFiles[i].name} is too large!`);
+        toast.error('Some files are larger than 1.5MB.');
         return;
       }
-
-      filesData.append(`photos`, newImgFiles[i]);
     }
-    // photosDocs = [{},{}...]
-    // to send objects, arrays use JSON.stringify(photosDocs) to upend to FormData instance
-    //filesData.append(`nameOfField`, JSON.stringify(photosDocs));
-    // and use JSON.parse(req.body.nameOfField)
-    //filesData.append(`photosDocs`, JSON.stringify(photosDocs));
 
-    try {
-      //by uploading images server should return array of photos with urls
-      const { data } = await axiosInstance.post<{ photos: { url: string; name: string }[] }>(
-        'places/photos',
-        filesData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
-
-      setAddedPhotos((prev) => [...prev, ...data.photos]);
-
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
+    dispatch(uploadMultiplePhotos(newImgFiles));
   };
 
-  const renderedAddedPhotos = addedPhotos.map((photo) => (
+  const renderedAddedPhotos = photos.map((photo) => (
     <div key={photo.name} className="w-48 h-32">
       <img className="w-full h-full object-cover object-center rounded-2xl" src={photo.url} />
       <button
@@ -95,7 +59,7 @@ export const PhotosUploader: React.FunctionComponent<PhotosUploaderPropsT> = (pr
     </div>
   ));
 
-  const addPhotoDisabled = addedPhotos.length >= 5;
+  const addPhotoDisabled = photos.length >= 5;
 
   return (
     <>

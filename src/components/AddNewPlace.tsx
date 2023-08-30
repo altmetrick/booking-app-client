@@ -1,36 +1,27 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent } from 'react';
 import { BtnGoBack } from './buttons/BtnGoBack';
 
 import { FormRowInput } from './FormRowInput';
 import { Perks } from './Perks';
 import { PhotosUploader } from './PhotosUploader';
-import { PerkT, PhotoT, PlacePropNameT } from '../types';
-import { axiosInstance } from '../features/api/axios-instance';
+import { PerkT, PlacePropNameT } from '../types';
+
 import { toast } from 'react-hot-toast';
 
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { handlePlaceInputChange, togglePerks } from '../features/place/singlePlaceSlice';
-//import { useNavigate } from 'react-router-dom';
-
-type PlaceDataT = {
-  title: string;
-  description: string;
-  address: string;
-  photos: PhotoT[];
-  perks: PerkT[];
-  extraInfo: string;
-  checkIn: string;
-  checkOut: string;
-  maxGuests: number;
-};
+import {
+  createPlace,
+  handlePlaceInputChange,
+  togglePerks,
+} from '../features/place/singlePlaceSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const AddNewPlace = () => {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const { title, address, description, perks, extraInfo, checkIn, checkOut, maxGuests } =
+  const status = useAppSelector((state) => state.singlePlace.status);
+  const { title, address, photos, description, perks, extraInfo, checkIn, checkOut, maxGuests } =
     useAppSelector((state) => state.singlePlace);
-  const [addedPhotos, setAddedPhotos] = useState<PhotoT[] | []>([]);
 
   const handleChangePlaceInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = e.target.name as PlacePropNameT;
@@ -46,11 +37,11 @@ export const AddNewPlace = () => {
   const handleCreateNewPlace = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const placeData: PlaceDataT = {
+    const placeData = {
       title,
       description,
       address,
-      photos: addedPhotos,
+      photos,
       perks,
       extraInfo,
       checkIn,
@@ -62,7 +53,7 @@ export const AddNewPlace = () => {
       !!title &&
       !!description &&
       !!address &&
-      !!addedPhotos.length &&
+      !!photos.length &&
       !!extraInfo &&
       !!checkIn &&
       !!checkOut &&
@@ -73,16 +64,10 @@ export const AddNewPlace = () => {
       return;
     }
 
-    try {
-      const { data } = await axiosInstance.post('/places/me', placeData);
+    await dispatch(createPlace(placeData));
 
-      console.log(data);
-      toast.success('Your new place created!');
-      //navigate('/account/places');
-    } catch (err) {
-      console.log(err);
-      //@ts-ignore
-      toast.error(err.message);
+    if (status === 'success') {
+      navigate('/account/places');
     }
   };
 
@@ -113,7 +98,7 @@ export const AddNewPlace = () => {
         />
 
         <div className="my-4">
-          <PhotosUploader addedPhotos={addedPhotos} setAddedPhotos={setAddedPhotos} />
+          <PhotosUploader photos={photos} />
         </div>
 
         <FormRowInput

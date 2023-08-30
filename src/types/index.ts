@@ -7,17 +7,17 @@ export type PhotoT = {
 export type PerkT = 'wifi' | 'parking' | 'entrance' | 'tv' | 'pets' | 'air';
 
 export type PlaceT = {
-  _id: string;
-  owner: string;
+  _id?: string;
+  owner?: string;
   title: string;
   description: string;
   address: string;
-  photos: PhotoT[] | [];
-  perks: PerkT[] | [];
+  photos: PhotoT[];
+  perks: PerkT[];
   extraInfo: string;
   checkIn: string;
   checkOut: string;
   maxGuests: number;
 };
-
+export type PlaceDataT = Pick<PlaceT, Exclude<keyof PlaceT, '_id' | 'owner'>>;
 export type PlacePropNameT = Exclude<keyof PlaceT, '_id' | 'owner'>;

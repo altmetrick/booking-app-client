@@ -12,7 +12,7 @@ import { checkIsLoggedIn } from './features/user/userSlice';
 import { ProfilePage } from './pages/account/ProfilePage';
 import { BookingsPage } from './pages/account/BookingsPage';
 import { PlacesPage } from './pages/account/PlacesPage';
-import { AddNewPlace } from './components/AddNewPlace';
+import { NewPlaceForm } from './components/NewPlaceForm';
 import { MyPlacesList } from './components/MyPlacesList';
 
 function App() {
@@ -33,9 +33,9 @@ function App() {
 
               <Route path="places" element={<PlacesPage />}>
                 <Route index element={<MyPlacesList />} />
-                <Route path="new" element={<AddNewPlace />} />
+                <Route path="new" element={<NewPlaceForm />} />
                 <Route path=":placeId" element={<div>Single Place</div>} />
-                <Route path="edit/:placeId" element={<div>Edit Place</div>} />
+                <Route path="edit/:placeId" element={<NewPlaceForm />} />
               </Route>
             </Route>
           </Route>

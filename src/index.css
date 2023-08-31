@@ -10,11 +10,19 @@ textarea {
   @apply w-full border border-gray-300 my-1 py-2 px-3 rounded-lg;
 }
 
-button {
-  @apply bg-gray-300;
+button,
+a {
+  @apply block text-center bg-gray-300;
 }
 
-button.primary {
+button.primary,
+a.primary {
   background-color: #f5385d;
   @apply bg-primary text-white p-2 w-full rounded-full;
+}
+
+button.secondary,
+a.secondary {
+  background-color: #f5385d;
+  @apply bg-blue-400 text-white p-2 w-full rounded-full;
 }

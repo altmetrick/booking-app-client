@@ -13,13 +13,21 @@ import {
   createPlace,
   handlePlaceInputChange,
   togglePerks,
+  updatePlace,
 } from '../features/place/singlePlaceSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export const AddNewPlace = () => {
+export const NewPlaceForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const { placeId } = useParams();
+  console.log(placeId);
+
+  const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
   const status = useAppSelector((state) => state.singlePlace.status);
+  console.log(status);
+  //const _id = useAppSelector((state) => state.singlePlace._id)
   const { title, address, photos, description, perks, extraInfo, checkIn, checkOut, maxGuests } =
     useAppSelector((state) => state.singlePlace);
 
@@ -34,7 +42,7 @@ export const AddNewPlace = () => {
     dispatch(togglePerks({ name, checked }));
   };
 
-  const handleCreateNewPlace = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSavePlace = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const placeData = {
@@ -64,10 +72,17 @@ export const AddNewPlace = () => {
       return;
     }
 
-    await dispatch(createPlace(placeData));
+    try {
+      //If Editing dispatch updatePlace!!!
+      if (isEditing) {
+        await dispatch(updatePlace({ ...placeData, _id: placeId }));
+      } else {
+        await dispatch(createPlace(placeData));
+      }
 
-    if (status === 'success') {
       navigate('/account/places');
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -75,10 +90,12 @@ export const AddNewPlace = () => {
     <div>
       <div className="flex mb-6">
         <BtnGoBack />
-        <h2 className="text-2xl text-center flex-grow">Add new place</h2>
+        <h2 className="text-2xl text-center flex-grow">
+          {isEditing ? 'Update Your Place' : 'Add New Place'}
+        </h2>
       </div>
 
-      <form onSubmit={handleCreateNewPlace}>
+      <form onSubmit={handleSavePlace}>
         <FormRowInput
           labelText={'Title'}
           type={'text'}
@@ -162,7 +179,7 @@ export const AddNewPlace = () => {
             type="submit"
             className="inline-flex bg-primary text-white py-2 px-6 rounded-full"
           >
-            Save
+            {isEditing ? 'Save Updates' : 'Create Place'}
           </button>
         </div>
       </form>

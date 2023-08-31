@@ -48,6 +48,10 @@ const myPlacesSlice = createSlice({
     addNewMyPlace: (state, { payload: { place } }: PayloadAction<{ place: PlaceT }>) => {
       state.places.push(place);
     },
+    addUpdatedMyPlace: (state, { payload: { place } }: PayloadAction<{ place: PlaceT }>) => {
+      const newPlaces = state.places.filter((myPlace) => myPlace._id !== place._id);
+      state.places = [place, ...newPlaces];
+    },
   },
 
   extraReducers: (builder) => {
@@ -70,6 +74,6 @@ const myPlacesSlice = createSlice({
   },
 });
 
-export const { addNewMyPlace } = myPlacesSlice.actions;
+export const { addNewMyPlace, addUpdatedMyPlace } = myPlacesSlice.actions;
 
 export const myPlacesReducer = myPlacesSlice.reducer;

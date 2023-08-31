@@ -1,13 +1,14 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { PerkT, PhotoT, PlaceDataT, PlacePropNameT, PlaceT } from '../../types';
+import { PerkT, PhotoT, PlaceT, PlacePropNameT } from '../../types';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
-import { addNewMyPlace } from '../myPlaces/myPlacesSlice';
+import { addNewMyPlace, addUpdatedMyPlace } from '../myPlaces/myPlacesSlice';
 
 type InitialStateT = {
   status: 'idle' | 'loading' | 'success' | 'failed';
   statusPhotos: 'idle' | 'loading' | 'success' | 'failed';
+  _id: string | null;
   title: string;
   description: string;
   address: string;
@@ -18,6 +19,7 @@ type InitialStateT = {
   checkOut: string;
   maxGuests: number;
   error: null | Error | string;
+  isEditing: boolean;
 };
 
 //ResTypes:
@@ -98,7 +100,7 @@ export const uploadMultiplePhotos = createAsyncThunk(
 );
 export const createPlace = createAsyncThunk(
   'singlePlace/savePlace',
-  async (placeData: PlaceDataT, thunkApi) => {
+  async (placeData: PlaceT, thunkApi) => {
     try {
       const { data } = await axiosInstance.post<createPlaceResT>(
         '/places/me',
@@ -122,11 +124,35 @@ export const createPlace = createAsyncThunk(
     }
   }
 );
-//Update place ---
+export const updatePlace = createAsyncThunk(
+  'singlePlace/updatePlace',
+  async (placeData: PlaceT, thunkApi) => {
+    try {
+      const { data } = await axiosInstance.patch<createPlaceResT>(
+        `/places/me/${placeData._id}`,
+        { placeData },
+        thunkApi
+      );
+
+      thunkApi.dispatch(clearAllValues());
+      //when place is updated also update it at myPlacesSlice state
+      thunkApi.dispatch(addUpdatedMyPlace({ place: data.place }));
+
+      return data;
+    } catch (err) {
+      const error: AxiosError<any> = err as any;
+      if (error.response) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      throw err;
+    }
+  }
+);
 
 const initialState = {
   status: 'idle',
   statusPhotos: 'idle',
+  _id: null,
   title: '',
   description: '',
   address: '',
@@ -137,6 +163,7 @@ const initialState = {
   checkOut: '',
   maxGuests: 3,
   error: null,
+  isEditing: false,
 } as InitialStateT;
 
 const singlePlaceSlice = createSlice({
@@ -145,6 +172,9 @@ const singlePlaceSlice = createSlice({
   reducers: {
     clearAllValues: () => {
       return { ...initialState };
+    },
+    setEditPlace: (_state, { payload }) => {
+      return { ...payload, isEditing: true, status: 'idle' };
     },
     handlePlaceInputChange: (
       state,
@@ -228,10 +258,26 @@ const singlePlaceSlice = createSlice({
           state.status = 'failed';
           toast.error(message);
         }
+      )
+      //updatePlace
+      .addCase(updatePlace.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updatePlace.fulfilled, (state) => {
+        toast.success('New place is updated!');
+        state.status = 'success';
+      })
+      .addCase(
+        updatePlace.rejected,
+        (state, { payload: { message } }: PayloadAction<{ message: string } | any>) => {
+          state.status = 'failed';
+          toast.error(message);
+        }
       );
   },
 });
 
-export const { handlePlaceInputChange, togglePerks, clearAllValues } = singlePlaceSlice.actions;
+export const { handlePlaceInputChange, togglePerks, setEditPlace, clearAllValues } =
+  singlePlaceSlice.actions;
 
 export const singlePlaceReducer = singlePlaceSlice.reducer;

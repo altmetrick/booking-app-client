@@ -3,6 +3,7 @@ import { PerkT, PhotoT, PlaceDataT, PlacePropNameT, PlaceT } from '../../types';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { addNewMyPlace } from '../myPlaces/myPlacesSlice';
 
 type InitialStateT = {
   status: 'idle' | 'loading' | 'success' | 'failed';
@@ -107,6 +108,10 @@ export const createPlace = createAsyncThunk(
 
       thunkApi.dispatch(clearAllValues());
 
+      //also when new place is created add it to the myPlaces state
+      // by dispatching addPlace(newPlace) AC imported from myPlacesSlice
+      thunkApi.dispatch(addNewMyPlace({ place: data.place }));
+
       return data;
     } catch (err) {
       const error: AxiosError<any> = err as any;
@@ -117,10 +122,7 @@ export const createPlace = createAsyncThunk(
     }
   }
 );
-
-//add multiple photos
-//create place
-//update place
+//Update place ---
 
 const initialState = {
   status: 'idle',

@@ -29,7 +29,7 @@ export const AddNewPlace = () => {
     dispatch(handlePlaceInputChange({ name, value }));
   };
   const handleTogglePerk = (e: ChangeEvent<HTMLInputElement>) => {
-    //   // alert(`${e.target.name}  ${e.target.value} ${e.target.checked}`);
+    // alert(`${e.target.name}  ${e.target.value} ${e.target.checked}`);
     const { name, checked } = e.target as { name: PerkT; checked: boolean };
     dispatch(togglePerks({ name, checked }));
   };
@@ -165,7 +165,6 @@ export const AddNewPlace = () => {
             Save
           </button>
         </div>
-        <button type="submit">Create</button>
       </form>
     </div>
   );

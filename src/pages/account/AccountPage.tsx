@@ -16,7 +16,7 @@ export const AccountPage = () => {
     );
   }
 
-  const links = [
+  const navLinks = [
     {
       label: 'My Profile',
       path: '/account/profile',
@@ -85,15 +85,15 @@ export const AccountPage = () => {
     },
   ];
 
-  const renderedNavLinks = links.map((link) => {
-    const activeStyle = 'bg-primary text-white rounded-full transition duration-300 ease-out';
-    const notActiveStyle = 'bg-gray-200 rounded-full';
+  const renderedNavLinks = navLinks.map((link) => {
+    const activeStyle = 'bg-primary text-white  transition duration-300 ease-out';
+    const notActiveStyle = 'bg-gray-200';
     return (
       <NavLink
         key={link.label}
         to={link.path}
         className={({ isActive }) =>
-          `inline-flex gap-1 py-2 px-6 ${isActive ? activeStyle : notActiveStyle}`
+          `inline-flex gap-1 py-2 px-6 rounded-full ${isActive ? activeStyle : notActiveStyle}`
         }
       >
         {link?.icon()}

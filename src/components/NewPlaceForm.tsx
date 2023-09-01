@@ -33,10 +33,10 @@ export const NewPlaceForm = () => {
     console.log(status);
     if (status === 'success') {
       navigate('/account/places');
-      //when uploading/updating is successful clear state
+      //when uploading/updating is successful clear state, so status will be 'idle'
       dispatch(clearAllValues());
     }
-  }, [status]);
+  }, [status, dispatch, navigate]);
 
   const handleChangePlaceInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = e.target.name as PlacePropNameT;

@@ -18,7 +18,7 @@ a {
 button.primary,
 a.primary {
   background-color: #f5385d;
-  @apply bg-primary text-white p-2 w-full rounded-full;
+  @apply bg-primary text-white p-2 w-full  rounded-full;
 }
 
 button.secondary,

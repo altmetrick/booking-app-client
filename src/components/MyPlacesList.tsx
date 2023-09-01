@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { deleteMyPlace, getMyPlaces } from '../features/myPlaces/myPlacesSlice';
 import { PlaceT } from '../types';
 import { clearAllValues, setEditPlace } from '../features/place/singlePlaceSlice';
+import { Modal } from './modal/Modal';
 
 export const MyPlacesList = () => {
   const dispatch = useAppDispatch();
   const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
   const status = useAppSelector((state) => state.myPlaces.status);
   const myPlaces = useAppSelector((state) => state.myPlaces.places);
+
+  const [placeToDeleteId, setPlaceToDeleteId] = useState<null | string>(null);
 
   useEffect(() => {
     console.log('use effect places');
@@ -27,6 +30,7 @@ export const MyPlacesList = () => {
 
   const handleDeletePlace = (id: string) => {
     dispatch(deleteMyPlace(id));
+    setPlaceToDeleteId(null);
   };
 
   const handleAddNewPlace = () => {
@@ -34,6 +38,35 @@ export const MyPlacesList = () => {
       dispatch(clearAllValues());
     }
   };
+
+  const modal = (
+    <Modal onClose={() => setPlaceToDeleteId(null)}>
+      <>
+        <h2 className="text-gray-600 text-xl text-center">
+          Are you sure you want to delete your place?
+        </h2>
+        <div className="flex gap-4 mt-5">
+          <button
+            className="secondary w-20"
+            onClick={() => {
+              //@ts-ignore
+              handleDeletePlace(placeToDeleteId);
+            }}
+          >
+            Delete
+          </button>
+          <button
+            className="primary w-20"
+            onClick={() => {
+              setPlaceToDeleteId(null);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </>
+    </Modal>
+  );
 
   const renderedMyPlaces = myPlaces.map((place) => (
     <div
@@ -66,7 +99,7 @@ export const MyPlacesList = () => {
           <button
             onClick={() => {
               //@ts-ignore
-              handleDeletePlace(place._id);
+              setPlaceToDeleteId(place._id);
             }}
             className="secondary"
           >
@@ -87,6 +120,7 @@ export const MyPlacesList = () => {
 
   return (
     <div>
+      {placeToDeleteId && modal}
       {content}
       <div className="text-center">
         <Link

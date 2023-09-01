@@ -134,7 +134,6 @@ export const updatePlace = createAsyncThunk(
         thunkApi
       );
 
-      thunkApi.dispatch(clearAllValues());
       //when place is updated also update it at myPlacesSlice state
       thunkApi.dispatch(addUpdatedMyPlace({ place: data.place }));
 

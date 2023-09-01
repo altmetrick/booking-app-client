@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent } from 'react';
+import { ChangeEvent, FormEvent, useEffect } from 'react';
 import { BtnGoBack } from './buttons/BtnGoBack';
 
 import { FormRowInput } from './FormRowInput';
@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 
 import { useAppDispatch, useAppSelector } from '../store/store';
 import {
+  clearAllValues,
   createPlace,
   handlePlaceInputChange,
   togglePerks,
@@ -22,14 +23,20 @@ export const NewPlaceForm = () => {
   const dispatch = useAppDispatch();
 
   const { placeId } = useParams();
-  console.log(placeId);
 
   const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
   const status = useAppSelector((state) => state.singlePlace.status);
-  console.log(status);
-  //const _id = useAppSelector((state) => state.singlePlace._id)
   const { title, address, photos, description, perks, extraInfo, checkIn, checkOut, maxGuests } =
     useAppSelector((state) => state.singlePlace);
+
+  useEffect(() => {
+    console.log(status);
+    if (status === 'success') {
+      navigate('/account/places');
+      //when uploading/updating is successful clear state
+      dispatch(clearAllValues());
+    }
+  }, [status]);
 
   const handleChangePlaceInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = e.target.name as PlacePropNameT;
@@ -79,8 +86,6 @@ export const NewPlaceForm = () => {
       } else {
         await dispatch(createPlace(placeData));
       }
-
-      navigate('/account/places');
     } catch (err) {
       console.log(err);
     }

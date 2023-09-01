@@ -12,7 +12,7 @@ textarea {
 
 button,
 a {
-  @apply block text-center bg-gray-300;
+  @apply block text-center;
 }
 
 button.primary,

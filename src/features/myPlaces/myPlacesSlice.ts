@@ -14,10 +14,13 @@ type InitialStateT = {
 type GetMyPlacesResT = {
   places: PlaceT[];
 };
+type DeleteMyPlaceT = {
+  id: string;
+  message: string;
+};
 
 //Thunks:
-
-export const getMyPlaces = createAsyncThunk('myPlaces/getMyPlaces', async (_, thunkApi) => {
+export const getMyPlaces = createAsyncThunk('myPlaces/getPlaces', async (_, thunkApi) => {
   try {
     const { data } = await axiosInstance.get<GetMyPlacesResT>('/places/me');
 
@@ -31,9 +34,22 @@ export const getMyPlaces = createAsyncThunk('myPlaces/getMyPlaces', async (_, th
   }
 });
 
-//add multiple photos
-//create place
-//update place
+export const deleteMyPlace = createAsyncThunk(
+  'myPlaces/DeletePlace',
+  async (id: string, thunkApi) => {
+    try {
+      const { data } = await axiosInstance.delete<DeleteMyPlaceT>(`/places/me/${id}`);
+      console.log(data);
+      return id;
+    } catch (err) {
+      const error: AxiosError<any> = err as any;
+      if (error.response) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      throw err;
+    }
+  }
+);
 
 const initialState = {
   status: 'idle',
@@ -46,7 +62,7 @@ const myPlacesSlice = createSlice({
   initialState,
   reducers: {
     addNewMyPlace: (state, { payload: { place } }: PayloadAction<{ place: PlaceT }>) => {
-      state.places.push(place);
+      state.places.unshift(place);
     },
     addUpdatedMyPlace: (state, { payload: { place } }: PayloadAction<{ place: PlaceT }>) => {
       const newPlaces = state.places.filter((myPlace) => myPlace._id !== place._id);
@@ -66,6 +82,22 @@ const myPlacesSlice = createSlice({
       })
       .addCase(
         getMyPlaces.rejected,
+        (state, { payload }: PayloadAction<{ message: string } | any>) => {
+          state.status = 'failed';
+          toast.error(payload.message);
+        }
+      )
+      //deletePlace
+      .addCase(deleteMyPlace.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteMyPlace.fulfilled, (state, { payload: id }) => {
+        state.places = state.places.filter((myPlace) => myPlace._id !== id);
+        state.status = 'success';
+        toast.success('Place is deleted!');
+      })
+      .addCase(
+        deleteMyPlace.rejected,
         (state, { payload }: PayloadAction<{ message: string } | any>) => {
           state.status = 'failed';
           toast.error(payload.message);

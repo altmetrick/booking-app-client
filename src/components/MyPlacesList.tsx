@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { getMyPlaces } from '../features/myPlaces/myPlacesSlice';
+import { deleteMyPlace, getMyPlaces } from '../features/myPlaces/myPlacesSlice';
 import { PlaceT } from '../types';
 import { clearAllValues, setEditPlace } from '../features/place/singlePlaceSlice';
 
@@ -25,6 +25,10 @@ export const MyPlacesList = () => {
     dispatch(setEditPlace(place));
   };
 
+  const handleDeletePlace = (id: string) => {
+    dispatch(deleteMyPlace(id));
+  };
+
   const handleAddNewPlace = () => {
     if (isEditing) {
       dispatch(clearAllValues());
@@ -34,7 +38,7 @@ export const MyPlacesList = () => {
   const renderedMyPlaces = myPlaces.map((place) => (
     <div
       key={place._id}
-      className="grid sm:grid-cols-1  md:grid-cols-[auto,1fr]  gap-3 my-3 p-4 bg-gray-200 rounded-2xl"
+      className="grid sm:grid-cols-1  md:grid-cols-[auto,1fr]  gap-3 my-3 p-4 bg-blue-100 rounded-2xl"
     >
       <div className="min-width-48 h-32">
         <img
@@ -59,7 +63,15 @@ export const MyPlacesList = () => {
             Edit
           </Link>
 
-          <button className="secondary">Delete</button>
+          <button
+            onClick={() => {
+              //@ts-ignore
+              handleDeletePlace(place._id);
+            }}
+            className="secondary"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

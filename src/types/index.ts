@@ -21,4 +21,4 @@ export type PlaceT = {
 };
 //export type PlaceDataT = Pick<PlaceT, Exclude<keyof PlaceT,  | 'owner'>>;
 export type PlaceDataT = PlaceT;
-export type PlacePropNameT = Exclude<keyof PlaceT, '_id' | 'owner'>;
+export type PlacePropNameT = Exclude<keyof PlaceT, '_id' | 'owner' | 'photos' | 'perks'>;

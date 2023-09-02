@@ -192,6 +192,11 @@ const singlePlaceSlice = createSlice({
         state.perks = state.perks.filter((perk) => perk !== name);
       }
     },
+    changeFirstPhoto: (state, { payload }) => {
+      const newOrderPhotos = state.photos;
+      [newOrderPhotos[0], newOrderPhotos[payload]] = [newOrderPhotos[payload], newOrderPhotos[0]];
+      state.photos = newOrderPhotos;
+    },
   },
 
   extraReducers: (builder) => {
@@ -276,7 +281,12 @@ const singlePlaceSlice = createSlice({
   },
 });
 
-export const { handlePlaceInputChange, togglePerks, setEditPlace, clearAllValues } =
-  singlePlaceSlice.actions;
+export const {
+  handlePlaceInputChange,
+  togglePerks,
+  setEditPlace,
+  clearAllValues,
+  changeFirstPhoto,
+} = singlePlaceSlice.actions;
 
 export const singlePlaceReducer = singlePlaceSlice.reducer;

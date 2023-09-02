@@ -14,8 +14,11 @@ export const ProfilePage = () => {
 
   return (
     <div className="text-center max-w-lg mx-auto">
-      Logged in as {user?.name} ({user?.email})
-      <button className="primary max-w-sm mt-4" onClick={handleLogout}>
+      <h3>
+        Logged in as {user?.name} ({user?.email})
+      </h3>
+
+      <button className="primary max-w-sm mt-4 mx-auto" onClick={handleLogout}>
         Log out
       </button>
     </div>

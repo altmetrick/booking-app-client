@@ -19,7 +19,7 @@ export const MyPlacesList = () => {
     if (!myPlaces.length && status === 'idle') {
       dispatch(getMyPlaces());
     }
-  }, [myPlaces]);
+  }, [myPlaces, status]);
 
   const handleAditPlace = (place: PlaceT) => {
     //if user currently edits a place and come backs to myTasksList

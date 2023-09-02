@@ -2,6 +2,8 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
+import { clearAllValues } from '../place/singlePlaceSlice';
+import { clearMyPlaces } from '../myPlaces/myPlacesSlice';
 
 type UserT = { name: string; email: string };
 
@@ -55,6 +57,10 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk('user/Logout', async (_, thunkApi) => {
   try {
     const { data } = await axiosInstance.get<LogoutResT>(`/auth/logout`);
+
+    //clear state from other slices on logout, or instead add extraCases for each slice
+    thunkApi.dispatch(clearAllValues());
+    thunkApi.dispatch(clearMyPlaces());
     return data;
   } catch (err) {
     const error: AxiosError<any> = err as any;

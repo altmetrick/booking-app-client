@@ -18,6 +18,7 @@ type InitialStateT = {
   checkIn: string;
   checkOut: string;
   maxGuests: number;
+  price: number;
   error: null | Error | string;
   isEditing: boolean;
 };
@@ -161,6 +162,7 @@ const initialState = {
   checkIn: '',
   checkOut: '',
   maxGuests: 3,
+  price: 100,
   error: null,
   isEditing: false,
 } as InitialStateT;

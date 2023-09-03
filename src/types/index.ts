@@ -18,6 +18,7 @@ export type PlaceT = {
   checkIn: string;
   checkOut: string;
   maxGuests: number;
+  price: number;
 };
 //export type PlaceDataT = Pick<PlaceT, Exclude<keyof PlaceT,  | 'owner'>>;
 export type PlaceDataT = PlaceT;

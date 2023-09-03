@@ -26,8 +26,18 @@ export const NewPlaceForm = () => {
 
   const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
   const status = useAppSelector((state) => state.singlePlace.status);
-  const { title, address, photos, description, perks, extraInfo, checkIn, checkOut, maxGuests } =
-    useAppSelector((state) => state.singlePlace);
+  const {
+    title,
+    address,
+    photos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = useAppSelector((state) => state.singlePlace);
 
   useEffect(() => {
     console.log(status);
@@ -62,6 +72,7 @@ export const NewPlaceForm = () => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     };
 
     const canSave =
@@ -72,7 +83,8 @@ export const NewPlaceForm = () => {
       !!extraInfo &&
       !!checkIn &&
       !!checkOut &&
-      !!maxGuests;
+      !!maxGuests &&
+      !!price;
 
     if (!canSave) {
       toast.error('Fill out all fields!');
@@ -174,6 +186,14 @@ export const NewPlaceForm = () => {
               type={'number'}
               name={'maxGuests'}
               value={maxGuests}
+              onChange={handleChangePlaceInput}
+            />
+
+            <FormRowInput
+              labelText={'Price Per Night $'}
+              type={'number'}
+              name={'price'}
+              value={price}
               onChange={handleChangePlaceInput}
             />
           </div>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { getAllPlaces } from '../features/allPlaces/allPlacesSlice';
+import { Link } from 'react-router-dom';
 
 export const IndexPage = () => {
   const dispatch = useAppDispatch();
@@ -14,7 +15,11 @@ export const IndexPage = () => {
   }, [places, dispatch]);
 
   const renderedPlaces = places.map((place) => (
-    <div key={place._id} className="bg-white rounded-lg overflow-hidden shadow-md">
+    <Link
+      to={`rooms/${place._id}`}
+      key={place._id}
+      className="bg-white rounded-lg overflow-hidden shadow-md"
+    >
       <img
         className="aspect-square rounded-lg object-cover object-center"
         src={place.photos[0].url}
@@ -29,7 +34,7 @@ export const IndexPage = () => {
         </p>
         <h3 className="font-semibold truncate">{place.title}</h3>
       </div>
-    </div>
+    </Link>
   ));
 
   return (

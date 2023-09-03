@@ -25,6 +25,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<IndexPage />} />
+          <Route path="/rooms/:id" element={<div>Single Place</div>} />
+
           <Route element={<PrivateRoutes />}>
             <Route path="/account" element={<AccountPage />}>
               <Route index element={<ProfilePage />} />

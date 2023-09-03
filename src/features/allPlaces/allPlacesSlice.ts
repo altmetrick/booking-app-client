@@ -59,4 +59,8 @@ const allPlacesSlice = createSlice({
   },
 });
 
+//selectors
+
+//Select place by id
+
 export const allPlacesReducer = allPlacesSlice.reducer;

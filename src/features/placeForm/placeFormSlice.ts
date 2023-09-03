@@ -42,7 +42,7 @@ type createPlaceResT = {
 //Thunks:
 
 export const uploadPhotoByLink = createAsyncThunk(
-  'singlePlace/addPhotoByLink',
+  'placeForm/addPhotoByLink',
   async (photoLink: string, thunkApi) => {
     try {
       const { data } = await axiosInstance.post<AddPhotoByLinkResT>('/places/photo-by-link', {
@@ -59,7 +59,7 @@ export const uploadPhotoByLink = createAsyncThunk(
   }
 );
 export const deletePhoto = createAsyncThunk(
-  'singlePlace/deletePhoto',
+  'placeForm/deletePhoto',
   async (photoName: string, thunkApi) => {
     try {
       const { data } = await axiosInstance.delete<DeletePhotoResT>(`/places/photos/${photoName}`);
@@ -75,7 +75,7 @@ export const deletePhoto = createAsyncThunk(
   }
 );
 export const uploadMultiplePhotos = createAsyncThunk(
-  'singlePlace/uploadMultiplePhotos',
+  'placeForm/uploadMultiplePhotos',
   async (photosFiles: File[], thunkApi) => {
     const filesData = new FormData();
     for (let i = 0; i < photosFiles.length; i++) {
@@ -100,7 +100,7 @@ export const uploadMultiplePhotos = createAsyncThunk(
   }
 );
 export const createPlace = createAsyncThunk(
-  'singlePlace/savePlace',
+  'placeForm/savePlace',
   async (placeData: PlaceT, thunkApi) => {
     try {
       const { data } = await axiosInstance.post<createPlaceResT>(
@@ -126,7 +126,7 @@ export const createPlace = createAsyncThunk(
   }
 );
 export const updatePlace = createAsyncThunk(
-  'singlePlace/updatePlace',
+  'placeForm/updatePlace',
   async (placeData: PlaceT, thunkApi) => {
     try {
       const { data } = await axiosInstance.patch<createPlaceResT>(
@@ -167,8 +167,8 @@ const initialState = {
   isEditing: false,
 } as InitialStateT;
 
-const singlePlaceSlice = createSlice({
-  name: 'singlePlace',
+const placeFormSlice = createSlice({
+  name: 'placeFormSlice',
   initialState,
   reducers: {
     clearAllValues: () => {
@@ -289,6 +289,6 @@ export const {
   setEditPlace,
   clearAllValues,
   changeFirstPhoto,
-} = singlePlaceSlice.actions;
+} = placeFormSlice.actions;
 
-export const singlePlaceReducer = singlePlaceSlice.reducer;
+export const placeFormReducer = placeFormSlice.reducer;

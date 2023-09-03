@@ -15,7 +15,7 @@ import {
   handlePlaceInputChange,
   togglePerks,
   updatePlace,
-} from '../features/place/singlePlaceSlice';
+} from '../features/placeForm/placeFormSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const NewPlaceForm = () => {
@@ -24,8 +24,8 @@ export const NewPlaceForm = () => {
 
   const { placeId } = useParams();
 
-  const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
-  const status = useAppSelector((state) => state.singlePlace.status);
+  const isEditing = useAppSelector((state) => state.placeForm.isEditing);
+  const status = useAppSelector((state) => state.placeForm.status);
   const {
     title,
     address,
@@ -37,7 +37,7 @@ export const NewPlaceForm = () => {
     checkOut,
     maxGuests,
     price,
-  } = useAppSelector((state) => state.singlePlace);
+  } = useAppSelector((state) => state.placeForm);
 
   useEffect(() => {
     console.log(status);
@@ -161,10 +161,10 @@ export const NewPlaceForm = () => {
 
         {/* Check In&Out times */}
         <div className="my-4">
-          <h2 className="text-xl">Check In&Out times</h2>
-          <p className="text-gray-500 text-sm">Add check in check out times</p>
+          <h2 className="text-xl">Check In&Out times, Price</h2>
+          <p className="text-gray-500 text-sm">Add check in check out times, and price per night</p>
 
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             <FormRowInput
               labelText={'Check In'}
               placeholder={'12:00'}
@@ -172,6 +172,7 @@ export const NewPlaceForm = () => {
               name={'checkIn'}
               value={checkIn}
               onChange={handleChangePlaceInput}
+              styles={{ label: 'text-md' }}
             />
             <FormRowInput
               labelText={'Check Out'}
@@ -180,6 +181,7 @@ export const NewPlaceForm = () => {
               name={'checkOut'}
               value={checkOut}
               onChange={handleChangePlaceInput}
+              styles={{ label: 'text-md' }}
             />
             <FormRowInput
               labelText={'Max Number of Guests'}
@@ -187,14 +189,16 @@ export const NewPlaceForm = () => {
               name={'maxGuests'}
               value={maxGuests}
               onChange={handleChangePlaceInput}
+              styles={{ label: 'text-md' }}
             />
 
             <FormRowInput
-              labelText={'Price Per Night $'}
+              labelText={'Price per night $'}
               type={'number'}
               name={'price'}
               value={price}
               onChange={handleChangePlaceInput}
+              styles={{ label: 'text-md' }}
             />
           </div>
         </div>

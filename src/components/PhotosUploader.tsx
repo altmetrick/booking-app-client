@@ -8,7 +8,7 @@ import {
   deletePhoto,
   uploadMultiplePhotos,
   uploadPhotoByLink,
-} from '../features/place/singlePlaceSlice';
+} from '../features/placeForm/placeFormSlice';
 
 type PhotosUploaderPropsT = {
   photos: PhotoT[];

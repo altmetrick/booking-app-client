@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { deleteMyPlace, getMyPlaces } from '../features/myPlaces/myPlacesSlice';
 import { PlaceT } from '../types';
-import { clearAllValues, setEditPlace } from '../features/place/singlePlaceSlice';
+import { clearAllValues, setEditPlace } from '../features/placeForm/placeFormSlice';
 import { Modal } from './modal/Modal';
 
 export const MyPlacesList = () => {
   const dispatch = useAppDispatch();
 
-  const isEditing = useAppSelector((state) => state.singlePlace.isEditing);
+  const isEditing = useAppSelector((state) => state.placeForm.isEditing);
   const status = useAppSelector((state) => state.myPlaces.status);
   const myPlaces = useAppSelector((state) => state.myPlaces.places);
 

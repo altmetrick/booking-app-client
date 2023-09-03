@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
-import { clearAllValues } from '../place/singlePlaceSlice';
+import { clearAllValues } from '../placeForm/placeFormSlice';
 import { clearMyPlaces } from '../myPlaces/myPlacesSlice';
 
 type UserT = { name: string; email: string };

@@ -19,7 +19,7 @@ export const MyPlacesList = () => {
     if (!myPlaces.length && status === 'idle') {
       dispatch(getMyPlaces());
     }
-  }, [myPlaces, status]);
+  }, [myPlaces, status, dispatch]);
 
   const handleAditPlace = (place: PlaceT) => {
     //if user currently edits a place and come backs to myTasksList
@@ -70,9 +70,9 @@ export const MyPlacesList = () => {
   const renderedMyPlaces = myPlaces.map((place) => (
     <div
       key={place._id}
-      className="grid sm:grid-cols-1  md:grid-cols-[auto,1fr]  gap-3 my-3 p-4 bg-blue-100 rounded-2xl"
+      className="grid sm:grid-cols-1  md:grid-cols-[3fr,7fr]  gap-3 my-3 p-4 bg-blue-100 rounded-2xl"
     >
-      <div className="min-width-48 h-32">
+      <div className="h-40">
         <img
           className="w-full h-full object-cover object-center rounded-2xl"
           src={place.photos[0].url}

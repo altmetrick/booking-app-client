@@ -3,6 +3,7 @@ import { PlaceT } from '../../types';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { RootState } from '../../store/store';
 
 type InitialStateT = {
   status: 'idle' | 'loading' | 'success' | 'failed';
@@ -59,8 +60,9 @@ const allPlacesSlice = createSlice({
   },
 });
 
-//selectors
-
-//Select place by id
+//Selectors:
+export const selectPlaceById = (placeId: string) => {
+  return (state: RootState) => state.allPlaces.places.find((place) => place._id === placeId);
+};
 
 export const allPlacesReducer = allPlacesSlice.reducer;

@@ -14,6 +14,7 @@ import { BookingsPage } from './pages/account/BookingsPage';
 import { PlacesPage } from './pages/account/PlacesPage';
 import { NewPlaceForm } from './components/NewPlaceForm';
 import { MyPlacesList } from './components/MyPlacesList';
+import { SinglePlace } from './components/SinglePlace';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<IndexPage />} />
-          <Route path="/rooms/:id" element={<div>Single Place</div>} />
+          <Route path="/all-places/:placeId" element={<SinglePlace />} />
 
           <Route element={<PrivateRoutes />}>
             <Route path="/account" element={<AccountPage />}>
@@ -36,7 +37,7 @@ function App() {
               <Route path="places" element={<PlacesPage />}>
                 <Route index element={<MyPlacesList />} />
                 <Route path="new" element={<NewPlaceForm />} />
-                <Route path=":placeId" element={<div>Single Place</div>} />
+                {/* <Route path=":placeId" element={<SinglePlace />} /> */}
                 <Route path="edit/:placeId" element={<NewPlaceForm />} />
               </Route>
             </Route>

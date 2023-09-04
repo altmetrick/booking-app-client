@@ -23,7 +23,7 @@ export const PlaceCard: React.FunctionComponent<PropsT> = ({ place }) => {
 
   return (
     <Link
-      to={`rooms/${place._id}`}
+      to={`all-places/${place._id}`}
       key={place._id}
       className="bg-white rounded-lg overflow-hidden shadow-md text-left group"
     >
@@ -81,9 +81,10 @@ export const PlaceCard: React.FunctionComponent<PropsT> = ({ place }) => {
           )}
         </div>
         {/* Little dots */}
-        <div className="absolute bottom-3 w-full flex gap-[0.5rem] justify-center items-center">
-          {place.photos.map((photo, i) => (
+        <div className="absolute bottom-3 w-full flex gap-[0.5rem] justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {place.photos.map((_, i) => (
             <div
+              key={i}
               className={`bg-white/80 rounded-full ${
                 i === currPhotoIdx ? 'h-2 w-2' : 'h-1 w-1'
               } transition duration-300`}

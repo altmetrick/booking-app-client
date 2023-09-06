@@ -6,6 +6,12 @@ export type PhotoT = {
 
 export type PerkT = 'wifi' | 'parking' | 'entrance' | 'tv' | 'pets' | 'air';
 
+export interface PerkOptionT {
+  label: string;
+  name: PerkT;
+  icon: () => JSX.Element | null;
+}
+
 export type PlaceT = {
   _id?: string;
   owner?: string;

@@ -4,6 +4,8 @@ import { selectPlaceById } from '../features/allPlaces/allPlacesSlice';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PhotosCarousel } from './PhotosCarousel';
+import { perksOptions } from '../utils/perks-options';
+import { BookingWidget } from './BookingWidget';
 
 export const SinglePlace = () => {
   const { placeId } = useParams();
@@ -79,9 +81,20 @@ export const SinglePlace = () => {
     return AllPhotosGrid;
   }
 
+  const renderedPlacePerks = perksOptions.map((perk) => {
+    if (place?.perks.includes(perk.name)) {
+      return (
+        <div className="flex gap-2 mb-2">
+          {perk.icon()}
+          <span>{perk.label}</span>
+        </div>
+      );
+    }
+  });
+
   return (
     <div className="mt-8">
-      <h1 className="text-2xl">{place?.title}</h1>
+      <h1 className="text-3xl ">{place?.title}</h1>
       <a
         className="text-sm text-gray-800 underline inline"
         rel="noopener noreferrer"
@@ -91,26 +104,24 @@ export const SinglePlace = () => {
         {place?.address}
       </a>
 
-      <div className="relative">
-        {/* Photos Grid */}
-        <div className="mt-4 grid grid-cols-[7fr,3fr]  gap-2 rounded-xl overflow-hidden">
-          <div className="">
-            <img
-              src={place?.photos[0].url}
-              className="aspect-[1.5/1] w-full h-full object-cover object-center"
-            />
-          </div>
+      {/* Photos Grid */}
+      <div className="relative mt-4 grid grid-cols-[7fr,3fr]  gap-2 rounded-xl overflow-hidden">
+        <div className="">
+          <img
+            src={place?.photos[0].url}
+            className="aspect-[1.5/1] w-full h-full object-cover object-center"
+          />
+        </div>
 
-          <div className="grid grid-rows-2 gap-2 max-h-[30rem]">
-            <img
-              src={place?.photos[1].url}
-              className="aspect-square w-full h-full object-cover object-center"
-            />
-            <img
-              src={place?.photos[2].url}
-              className="aspect-square w-full h-full object-cover object-center"
-            />
-          </div>
+        <div className="grid grid-rows-2 gap-2 max-h-[30rem]">
+          <img
+            src={place?.photos[1].url}
+            className="aspect-square w-full h-full object-cover object-center"
+          />
+          <img
+            src={place?.photos[2].url}
+            className="aspect-square w-full h-full object-cover object-center"
+          />
           <button
             className="absolute bottom-5 right-5 text-sm border border-black rounded-md bg-white px-3 py-1 shadow-sm flex items-center gap-1"
             onClick={() => setShowAllPhotos(true)}
@@ -130,6 +141,30 @@ export const SinglePlace = () => {
             Show all photos
           </button>
         </div>
+      </div>
+
+      {/*Info grid*/}
+      <div className="my-6 grid sm:grid-cols-1 sm:gap-8   md:grid-cols-[2fr,1fr] md:gap-10">
+        <div>
+          <h2 className="text-2xl mb-1 font-semibold">Description</h2>
+          <p className="text-gray-700">{place?.description}</p>
+          <div className="my-4">
+            <p className="">Check in time: {place?.checkIn}</p>
+            <p className="">Check out time: {place?.checkOut}</p>
+            <p className="">Max number of guests: {place?.maxGuests}</p>
+          </div>
+          {/* Place's Perks */}
+          <div>
+            <h2 className="text-xl mb-1 ">What offers this place</h2>
+            <div>{renderedPlacePerks}</div>
+          </div>
+        </div>
+
+        {place && <BookingWidget place={place} />}
+      </div>
+      <div className="mb-20">
+        <h2 className="font-semibold text-xl">Extra info</h2>
+        <p className="text-gray-700">{place?.extraInfo}</p>
       </div>
     </div>
   );

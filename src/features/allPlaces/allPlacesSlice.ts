@@ -15,6 +15,9 @@ type InitialStateT = {
 type GetAllTasksResT = {
   places: PlaceT[];
 };
+type GetOneTaskResT = {
+  place: PlaceT;
+};
 
 //Thunks:
 export const getAllPlaces = createAsyncThunk('allPlaces/getAllPlaces', async (_, thunkApi) => {
@@ -29,6 +32,22 @@ export const getAllPlaces = createAsyncThunk('allPlaces/getAllPlaces', async (_,
     throw err;
   }
 });
+
+export const getOnePlace = createAsyncThunk(
+  'allPlaces/getOnePlace',
+  async (placeId: string, thunkApi) => {
+    try {
+      const { data } = await axiosInstance.get<GetOneTaskResT>(`/places/${placeId}`);
+      return data;
+    } catch (err) {
+      const error: AxiosError<any> = err as any;
+      if (error.response) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      throw err;
+    }
+  }
+);
 
 const initialState = {
   status: 'idle',

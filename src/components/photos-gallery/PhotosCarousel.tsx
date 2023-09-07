@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { PlaceT } from '../types';
+import { PhotoT } from '../../types';
 import { createPortal } from 'react-dom';
 
 type PhotosCarouselPropsT = {
   currIdx?: number;
-  place: PlaceT;
+  photos: PhotoT[];
   onClose: () => void;
 };
 
 export const PhotosCarousel: React.FunctionComponent<PhotosCarouselPropsT> = ({
-  place,
+  photos,
   onClose,
   currIdx,
 }) => {
@@ -25,7 +25,7 @@ export const PhotosCarousel: React.FunctionComponent<PhotosCarouselPropsT> = ({
   };
 
   const showLeft = currPhotoIdx !== 0;
-  const showRight = currPhotoIdx !== place.photos.length - 1;
+  const showRight = currPhotoIdx !== photos.length - 1;
 
   return createPortal(
     <div className="absolute inset-0 bg-black">
@@ -51,7 +51,7 @@ export const PhotosCarousel: React.FunctionComponent<PhotosCarouselPropsT> = ({
         </button>
 
         <span className="text-white -ml-10 text-lg font-extralight">
-          {currPhotoIdx + 1} / {place.photos.length}
+          {currPhotoIdx + 1} / {photos.length}
         </span>
         <div className="">{'()'}</div>
       </div>
@@ -59,7 +59,7 @@ export const PhotosCarousel: React.FunctionComponent<PhotosCarouselPropsT> = ({
       {/*Photo container*/}
       <div className="relative max-w-5xl mx-auto h-full flex justify-center items-center">
         <img
-          src={place?.photos[currPhotoIdx].url}
+          src={photos[currPhotoIdx].url}
           className="max-h-[80vh]  sm:max-w-[100%] md:max-w-[80%]"
         />
 

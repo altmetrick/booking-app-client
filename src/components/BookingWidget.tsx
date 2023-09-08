@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { PlaceT } from '../types';
-import { addDays, addMonths, differenceInCalendarDays, isBefore, isWithinInterval } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  differenceInCalendarDays,
+  format,
+  isBefore,
+  isSameDay,
+  isWithinInterval,
+} from 'date-fns';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,7 +16,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 type PropsT = { place: PlaceT };
 
 const bookedRanges = [
-  { start: new Date('2023-09-06'), end: new Date('2023-09-09') },
+  { start: new Date('2023-09-10'), end: new Date('2023-09-11') },
   { start: new Date('2023-09-13'), end: new Date('2023-09-15') },
   { start: new Date('2023-09-20'), end: new Date('2023-09-25') },
 ];
@@ -43,7 +51,7 @@ const DateIntervalPiker: React.FunctionComponent<DateIntervalPikerPropsT> = ({
     for (let i = 0; i < excludedRanges.length; i++) {
       const excludedRangeStart = excludedRanges[i].start;
 
-      if (startDate?.getUTCDay() === excludedRangeStart.getUTCDay()) {
+      if (isSameDay(startDate, excludedRangeStart)) {
         return addDays(excludedRangeStart, 1);
       }
 
@@ -59,7 +67,12 @@ const DateIntervalPiker: React.FunctionComponent<DateIntervalPikerPropsT> = ({
 
   const isInBookedRange = (date: Date) => {
     if (currConsecutiveRangeEnd === null) return true;
-    return isWithinInterval(date, { start: startDate || new Date(), end: currConsecutiveRangeEnd });
+
+    return isWithinInterval(date, {
+      //@ts-ignore
+      start: startDate,
+      end: currConsecutiveRangeEnd,
+    });
   };
 
   const handleSetStartDate = (date: Date) => {
@@ -110,8 +123,11 @@ const DateIntervalPiker: React.FunctionComponent<DateIntervalPikerPropsT> = ({
 
 export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
   const [numOfGuests, setNumOfGuests] = useState(1);
-  const [checkIn, setCheckIn] = useState<Date | null>(null);
-  const [checkOut, setCheckOut] = useState<Date | null>(null);
+  const [checkIn, setCheckIn] = useState<Date | null>(new Date());
+  const [checkOut, setCheckOut] = useState<Date | null>(new Date());
+
+  // console.log('checkIN:', format(checkIn, 'yyyy-MM-dd'));
+  // console.log('checkOut:', format(checkOut, 'yyyy-MM-dd'));
 
   return (
     <div className="p-4 border border-gray-300 rounded-2xl shadow-md sticky top-10 h-fit">

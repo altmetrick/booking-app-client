@@ -1,134 +1,61 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PlaceT } from '../types';
-import {
-  addDays,
-  addMonths,
-  differenceInCalendarDays,
-  format,
-  isBefore,
-  isSameDay,
-  isWithinInterval,
-} from 'date-fns';
-
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import { differenceInCalendarDays, format } from 'date-fns';
+import { DateIntervalPiker } from './DateIntervalPicker';
+import { useAppDispatch, useAppSelector } from '../store/store';
+import toast from 'react-hot-toast';
+import { createBooking } from '../features/bookings/bookingsSlice';
+import { useNavigate } from 'react-router-dom';
 
 type PropsT = { place: PlaceT };
 
-const bookedRanges = [
-  { start: new Date('2023-09-10'), end: new Date('2023-09-11') },
-  { start: new Date('2023-09-13'), end: new Date('2023-09-15') },
-  { start: new Date('2023-09-20'), end: new Date('2023-09-25') },
-];
+export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const bookingStatusCreation = useAppSelector((state) => state.bookings.statusSingle);
 
-type DateIntervalPikerPropsT = {
-  startId: string;
-  endId: string;
-  startLabel: string;
-  endLabel: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  setStartDate: (date: Date | null) => void;
-  setEndDate: (date: Date | null) => void;
-  excludedDateIntervals?: { start: Date; end: Date }[];
-};
+  const [checkIn, setCheckIn] = useState<Date | null>(null);
+  const [checkOut, setCheckOut] = useState<Date | null>(null);
+  const [numOfGuests, setNumOfGuests] = useState<number>(2);
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState<number>();
 
-const DateIntervalPiker: React.FunctionComponent<DateIntervalPikerPropsT> = ({
-  startId,
-  startLabel,
-  startDate,
-  setStartDate,
-  endId,
-  endLabel,
-  endDate,
-  setEndDate,
-  excludedDateIntervals,
-}) => {
-  const getEndOfConsecutiveRange = (
-    currStart: Date,
-    excludedRanges: { start: Date; end: Date }[]
-  ) => {
-    for (let i = 0; i < excludedRanges.length; i++) {
-      const excludedRangeStart = excludedRanges[i].start;
-
-      if (isSameDay(startDate, excludedRangeStart)) {
-        return addDays(excludedRangeStart, 1);
-      }
-
-      if (isBefore(currStart, excludedRangeStart)) return excludedRangeStart;
+  const handleBookPlace = async () => {
+    if (!checkIn || !checkOut || !numOfGuests || !fullName || !phone || !place._id) {
+      toast.error('Please, fill out all fields');
+      return;
     }
-    return null;
+
+    const newBookingData = {
+      place: place._id,
+      checkIn: format(checkIn, 'yyyy/MM/dd'),
+      checkOut: format(checkOut, 'yyyy/MM/dd'),
+      numOfGuests,
+      name: fullName,
+      phone,
+      price: differenceInCalendarDays(new Date(checkOut), new Date(checkIn)) * place.price,
+    };
+
+    const data = await dispatch(createBooking(newBookingData)).unwrap();
+    console.log(data);
   };
 
-  let currConsecutiveRangeEnd: null | Date = null;
-  if (startDate && excludedDateIntervals) {
-    currConsecutiveRangeEnd = getEndOfConsecutiveRange(startDate, excludedDateIntervals);
+  useEffect(() => {
+    if (bookingStatusCreation === 'success') {
+      navigate('/account/bookings');
+    }
+  }, [bookingStatusCreation, navigate, dispatch]);
+
+  let excludedIntervals: undefined | { start: Date; end: Date }[];
+
+  if (place.bookingRanges) {
+    excludedIntervals = [...place.bookingRanges].map((range) => ({
+      start: new Date(range.start),
+      end: new Date(range.end),
+    }));
   }
 
-  const isInBookedRange = (date: Date) => {
-    if (currConsecutiveRangeEnd === null) return true;
-
-    return isWithinInterval(date, {
-      //@ts-ignore
-      start: startDate,
-      end: currConsecutiveRangeEnd,
-    });
-  };
-
-  const handleSetStartDate = (date: Date) => {
-    setStartDate(date);
-    setEndDate(date);
-  };
-
-  return (
-    <>
-      <div className="cursor-pointer">
-        <label htmlFor={startId} className="cursor-pointer uppercase text-sm text-gray-700">
-          {startLabel}
-        </label>
-        <DatePicker
-          id={startId}
-          showIcon
-          minDate={new Date()}
-          maxDate={addMonths(new Date(), 3)}
-          selected={startDate}
-          onChange={(date) => handleSetStartDate(date || new Date())}
-          selectsStart
-          startDate={startDate}
-          endDate={endDate}
-          excludeDateIntervals={bookedRanges}
-        />
-      </div>
-      {/* Checkout */}
-      <div className="cursor-pointer">
-        <label htmlFor={endId} className="cursor-pointer uppercase text-sm text-gray-700">
-          {endLabel}
-        </label>
-        <DatePicker
-          showIcon={true}
-          minDate={startDate}
-          maxDate={addMonths(new Date(), 3)}
-          startDate={startDate}
-          endDate={endDate}
-          selected={endDate}
-          onChange={(date) => setEndDate(date || new Date())}
-          selectsEnd
-          excludeDateIntervals={excludedDateIntervals || []}
-          filterDate={isInBookedRange}
-        />
-      </div>
-    </>
-  );
-};
-
-export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
-  const [numOfGuests, setNumOfGuests] = useState(1);
-  const [checkIn, setCheckIn] = useState<Date | null>(new Date());
-  const [checkOut, setCheckOut] = useState<Date | null>(new Date());
-
-  // console.log('checkIN:', format(checkIn, 'yyyy-MM-dd'));
-  // console.log('checkOut:', format(checkOut, 'yyyy-MM-dd'));
-
+  //////
   return (
     <div className="p-4 border border-gray-300 rounded-2xl shadow-md sticky top-10 h-fit">
       <div>
@@ -136,7 +63,7 @@ export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
         <span className="text-md text-gray-700 font-light">night</span>
       </div>
 
-      <div className="my-3 p-3 min-w-[13rem] border border-gray-300 rounded-xl">
+      <div className="my-3 p-3  min-w-[13rem] border border-gray-300 rounded-xl">
         <DateIntervalPiker
           startDate={checkIn}
           setStartDate={setCheckIn}
@@ -146,27 +73,61 @@ export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
           setEndDate={setCheckOut}
           endId={'checkOut'}
           endLabel="Checkout"
-          excludedDateIntervals={bookedRanges}
+          excludedDateIntervals={excludedIntervals}
         />
 
         {/* Num Of Guests */}
-        <div className="col-span-2">
+        <div className="">
           <label htmlFor="numOfGuests" className="uppercase text-sm text-gray-700">
             Number of guests:{' '}
           </label>
           <input
-            id="numOfGuest"
+            id="numOfGuests"
             type="number"
-            className="text-center"
+            placeholder="2"
             min={1}
             max={place?.maxGuests}
             value={numOfGuests}
             onChange={(e) => setNumOfGuests(Number(e.target.value))}
           />
         </div>
+
+        {checkIn && numOfGuests && (
+          <>
+            {/* Full Name */}
+            <div className="">
+              <label htmlFor="fullName" className="uppercase text-sm text-gray-700">
+                Full Name{' '}
+              </label>
+              <input
+                autoComplete="off"
+                placeholder="John Doe"
+                id="name"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
+            {/* Phone */}
+            <div className="">
+              <label htmlFor="phone" className="uppercase text-sm text-gray-700">
+                Phone number{' '}
+              </label>
+              <input
+                id="phone"
+                type="phone"
+                placeholder="+123123456789"
+                value={phone}
+                onChange={(e) => setPhone(Number(e.target.value))}
+              />
+            </div>
+          </>
+        )}
       </div>
 
-      <button className="primary">Reserve</button>
+      <button className="primary" onClick={handleBookPlace}>
+        Reserve
+      </button>
 
       {checkIn && checkOut && (
         <div className="mt-4 flex justify-between text-md font-semibold">

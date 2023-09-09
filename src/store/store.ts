@@ -4,6 +4,7 @@ import { userReducer } from '../features/user/userSlice';
 import { placeFormReducer } from '../features/placeForm/placeFormSlice';
 import { myPlacesReducer } from '../features/myPlaces/myPlacesSlice';
 import { allPlacesReducer } from '../features/allPlaces/allPlacesSlice';
+import { bookingsReducer } from '../features/bookings/bookingsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     placeForm: placeFormReducer,
     myPlaces: myPlacesReducer,
     allPlaces: allPlacesReducer,
+    bookings: bookingsReducer,
   },
 });
 

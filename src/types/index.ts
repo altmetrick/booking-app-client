@@ -33,7 +33,7 @@ export type PlacePropNameT = Exclude<keyof PlaceT, '_id' | 'owner' | 'photos' | 
 
 export type BookingT = {
   _id?: string;
-  place: string;
+  place: PlaceT;
   bookedBy: string;
   checkIn: string;
   checkOut: string;
@@ -42,6 +42,13 @@ export type BookingT = {
   price: number;
 };
 
-export type BookingDataT = Pick<BookingT, Exclude<keyof BookingT, 'bookedBy' | '_id'>>;
+export type BookingDataT = {
+  place: string;
+  checkIn: string;
+  checkOut: string;
+  name: string;
+  phone: number;
+  price: number;
+};
 
 export type StatusT = 'idle' | 'loading' | 'success' | 'failed';

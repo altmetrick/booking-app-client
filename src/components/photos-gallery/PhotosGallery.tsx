@@ -38,6 +38,7 @@ const AllPhotosGalleryGrid: React.FunctionComponent<AllPhotosGalleryGridT> = ({
         <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 mt-10">
           {photos.map((photo, i) => (
             <div
+              key={photo._id}
               className="cursor-pointer"
               onClick={() => {
                 onPhotoClick(i);
@@ -49,7 +50,7 @@ const AllPhotosGalleryGrid: React.FunctionComponent<AllPhotosGalleryGridT> = ({
         </div>
       </div>
     </div>,
-    document.getElementById('modal-root') as HTMLElement
+    document.getElementById('root') as HTMLElement
   );
 };
 

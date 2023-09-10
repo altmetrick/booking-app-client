@@ -18,7 +18,7 @@ export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
   const [checkOut, setCheckOut] = useState<Date | null>(null);
   const [numOfGuests, setNumOfGuests] = useState<number>(2);
   const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState<number>();
+  const [phone, setPhone] = useState<number>(111999999);
 
   const handleBookPlace = async () => {
     if (!checkIn || !checkOut || !numOfGuests || !fullName || !phone || !place._id) {
@@ -48,14 +48,13 @@ export const BookingWidget: React.FunctionComponent<PropsT> = ({ place }) => {
 
   let excludedIntervals: undefined | { start: Date; end: Date }[];
 
-  if (place.bookingRanges) {
+  if (place.bookingRanges?.length) {
     excludedIntervals = [...place.bookingRanges].map((range) => ({
       start: new Date(range.start),
       end: new Date(range.end),
     }));
   }
 
-  //////
   return (
     <div className="p-4 border border-gray-300 rounded-2xl shadow-md sticky top-10 h-fit">
       <div>

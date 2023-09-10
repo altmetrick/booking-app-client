@@ -91,9 +91,10 @@ const bookingsSlice = createSlice({
       .addCase(createBooking.pending, (state) => {
         state.statusSingle = 'loading';
       })
-      .addCase(createBooking.fulfilled, (state, { payload: { booking } }) => {
-        state.bookingEntities.unshift(booking);
+      .addCase(createBooking.fulfilled, (state) => {
+        // state.bookingEntities.push(booking);
         state.statusSingle = 'success';
+        toast.success('Booking created!');
       })
       .addCase(
         createBooking.rejected,

@@ -3,6 +3,7 @@ import { BookingDataT, BookingT, StatusT } from '../../types';
 import { axiosInstance } from '../api/axios-instance';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { RootState } from '../../store/store';
 
 //ResTypes:
 type GetAllBookingsResT = {
@@ -105,6 +106,13 @@ const bookingsSlice = createSlice({
       );
   },
 });
+
+//Selectors:
+
+export const selectBookingById = (bookingId: string) => {
+  return (state: RootState) =>
+    state.bookings.bookingEntities.find((booking) => booking._id === bookingId);
+};
 
 export const { setSingleBookingStatus } = bookingsSlice.actions;
 

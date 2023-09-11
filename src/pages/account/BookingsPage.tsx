@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { getAllBookings, setSingleBookingStatus } from '../../features/bookings/bookingsSlice';
 import { differenceInCalendarDays, format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 export const BookingsPage = () => {
   const dispatch = useAppDispatch();
@@ -17,9 +18,10 @@ export const BookingsPage = () => {
   }, [dispatch]);
 
   const renderedBookings = bookings.map((booking) => (
-    <div
+    <Link
+      to={booking._id}
       key={booking._id}
-      className="grid sm:grid-cols-1  md:grid-cols-[3fr,7fr]  gap-3 my-3 p-4 bg-blue-100 rounded-2xl"
+      className="text-left grid sm:grid-cols-1  md:grid-cols-[3fr,7fr]  gap-3 my-3 p-4 bg-blue-100 rounded-2xl"
     >
       <div className="h-40">
         <img
@@ -49,7 +51,7 @@ export const BookingsPage = () => {
           <p>Total price: ${booking.price}</p>
         </div>
       </div>
-    </div>
+    </Link>
   ));
 
   return <div>{renderedBookings}</div>;

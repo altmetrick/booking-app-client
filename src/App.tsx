@@ -15,6 +15,7 @@ import { PlacesPage } from './pages/account/PlacesPage';
 import { NewPlaceForm } from './components/NewPlaceForm';
 import { MyPlacesList } from './components/MyPlacesList';
 import { SinglePlace } from './components/SinglePlace';
+import { SingleBooking } from './components/SingleBooking';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -32,7 +33,9 @@ function App() {
             <Route path="/account" element={<AccountPage />}>
               <Route index element={<ProfilePage />} />
               <Route path="profile" element={<ProfilePage />} />
+
               <Route path="bookings" element={<BookingsPage />} />
+              <Route path="bookings/:id" element={<SingleBooking />} />
 
               <Route path="places" element={<PlacesPage />}>
                 <Route index element={<MyPlacesList />} />

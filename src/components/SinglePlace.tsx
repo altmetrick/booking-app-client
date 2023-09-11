@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { getAllPlaces, selectPlaceById } from '../features/allPlaces/allPlacesSlice';
 
-import { perksOptions } from '../utils/perks-options';
 import { PhotosGallery } from './photos-gallery/PhotosGallery';
 import { BookingWidget } from './BookingWidget';
+import { DisplayPerks } from './DisplayPerks';
 
 export const SinglePlace = () => {
   const { placeId } = useParams();
@@ -20,17 +20,6 @@ export const SinglePlace = () => {
       dispatch(getAllPlaces());
     }
   }, [placesLength, dispatch]);
-
-  const renderedPlacePerks = perksOptions.map((perk) => {
-    if (place?.perks.includes(perk.name)) {
-      return (
-        <div key={perk.name} className="flex gap-2 mb-2">
-          {perk.icon()}
-          <span>{perk.label}</span>
-        </div>
-      );
-    }
-  });
 
   return (
     <div className="mt-8">
@@ -59,7 +48,7 @@ export const SinglePlace = () => {
           {/* Place's Perks */}
           <div>
             <h2 className="text-xl mb-1 ">What offers this place</h2>
-            <div>{renderedPlacePerks}</div>
+            <div>{place && <DisplayPerks placePerks={place.perks} />}</div>
           </div>
         </div>
 

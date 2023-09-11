@@ -32,7 +32,7 @@ export type PlaceDataT = PlaceT;
 export type PlacePropNameT = Exclude<keyof PlaceT, '_id' | 'owner' | 'photos' | 'perks'>;
 
 export type BookingT = {
-  _id?: string;
+  _id: string;
   place: PlaceT;
   bookedBy: string;
   checkIn: string;

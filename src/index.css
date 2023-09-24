@@ -19,11 +19,15 @@ a {
 button.primary,
 a.primary {
   background-color: #f5385d;
-  @apply bg-primary text-white p-2 w-full  rounded-full;
+  @apply bg-primary text-white p-2 w-full rounded-full;
 }
 
 button.secondary,
 a.secondary {
   background-color: #f5385d;
   @apply bg-blue-400 text-white p-2 w-full rounded-full;
+}
+
+input.search {
+  @apply w-full border border-gray-300 my-1 py-1 px-2 rounded-2xl;
 }

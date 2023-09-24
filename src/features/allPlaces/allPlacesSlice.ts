@@ -22,7 +22,7 @@ type GetOneTaskResT = {
 //Thunks:
 export const getAllPlaces = createAsyncThunk('allPlaces/getAllPlaces', async (_, thunkApi) => {
   try {
-    const { data } = await axiosInstance.get<GetAllTasksResT>('/places/');
+    const { data } = await axiosInstance.get<GetAllTasksResT>('/places/?page=1&limit=20');
     return data;
   } catch (err) {
     const error: AxiosError<any> = err as any;

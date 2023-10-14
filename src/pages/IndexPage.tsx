@@ -6,9 +6,6 @@ import { useSearchParams } from 'react-router-dom';
 
 export const IndexPage = () => {
   const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  console.log(searchParams);
 
   const places = useAppSelector((state) => state.allPlaces.places);
 

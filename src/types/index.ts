@@ -51,4 +51,12 @@ export type BookingDataT = {
   price: number;
 };
 
+export type GetAllPlacesFiltersT = {
+  address: string;
+  'price[lt]': number;
+  'price[gt]': number;
+  maxGuests: number;
+  sort: 'price' | '-price' | '';
+};
+
 export type StatusT = 'idle' | 'loading' | 'success' | 'failed';
